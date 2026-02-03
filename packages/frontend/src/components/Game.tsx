@@ -378,6 +378,26 @@ export const Game = () => {
 
         {/* Game Info Card */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-6">
+          {/* Player Stats - Compact */}
+          {stats && hasJoined && (
+            <div className="mb-4 flex items-center justify-center gap-4 text-xs">
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-green-600">{stats.wins}</span>
+                <span className="text-gray-500">W</span>
+              </div>
+              <div className="w-px h-4 bg-gray-300"></div>
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-red-600">{stats.losses}</span>
+                <span className="text-gray-500">L</span>
+              </div>
+              <div className="w-px h-4 bg-gray-300"></div>
+              <div className="flex items-center gap-1">
+                <span className="font-semibold text-yellow-600">{stats.draws}</span>
+                <span className="text-gray-500">D</span>
+              </div>
+            </div>
+          )}
+
           {/* Status Message */}
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
@@ -394,31 +414,6 @@ export const Game = () => {
               </div>
             )}
           </div>
-
-          {/* Player Stats */}
-          {stats && hasJoined && (
-            <div className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-gray-700 text-center mb-3">Your Stats</h3>
-              <div className="grid grid-cols-4 gap-3">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{stats.wins}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">Wins</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">{stats.losses}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">Losses</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-yellow-600">{stats.draws}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">Draws</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">{stats.totalGames}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">Total</div>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Players Info */}
           <div className="grid grid-cols-2 gap-4 mb-6">

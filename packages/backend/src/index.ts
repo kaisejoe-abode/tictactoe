@@ -12,7 +12,8 @@ const port = process.env.PORT || 3001;
 
 // CORS configuration
 const allowedOrigins = [
-  'http://localhost:5173', // Vite dev server
+  'http://localhost:3000', // Vite dev server (default)
+  'http://localhost:5173', // Vite dev server (alternate)
   'http://localhost:4173', // Vite preview
   process.env.FRONTEND_URL, // Production frontend URL
 ].filter((origin): origin is string => Boolean(origin));

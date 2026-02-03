@@ -1,13 +1,24 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+// Support both connection string and individual credentials (same as db.ts)
+const pool = new Pool(
+  process.env.DATABASE_URL
+    ? {
+        connectionString: process.env.DATABASE_URL,
+      }
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT || '5432'),
+        database: process.env.DB_NAME || 'tictactoe',
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
+      }
+);
 
 const createTables = async () => {
   try {
-    console.log('Creating tables...');
+    console.log('Running database migrations...');
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS games (
@@ -26,10 +37,12 @@ const createTables = async () => {
       );
     `);
 
-    console.log('Tables created successfully!');
+    console.log('✅ Database migrations completed successfully!');
+    await pool.end();
     process.exit(0);
   } catch (error) {
-    console.error('Error creating tables:', error);
+    console.error('❌ Error running migrations:', error.message);
+    await pool.end();
     process.exit(1);
   }
 };
