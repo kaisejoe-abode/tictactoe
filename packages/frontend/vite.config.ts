@@ -4,6 +4,7 @@ import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 
 export default defineConfig({
   plugins: [react(), TanStackRouterVite()],
+  publicDir: 'public', // Ensure public directory is copied
   server: {
     port: 3000,
     proxy: {
