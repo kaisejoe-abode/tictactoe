@@ -473,7 +473,7 @@ export const Game = () => {
           <div className="flex justify-center gap-4">
             <button
               onClick={handleReset}
-              disabled={requestReset.isPending || game.status === 'waiting' || !!game.resetRequestedBy}
+              disabled={requestReset.isPending || game.status === 'waiting' || game.status === 'done' || !!game.resetRequestedBy}
               className="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
             >
               {game.resetRequestedBy === myPlayerSymbol ? 'Reset Requested...' : 'Request Reset'}
