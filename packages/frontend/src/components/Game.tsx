@@ -120,16 +120,21 @@ export const Game = () => {
 
     // One player slot is open
     if (playerNameFromSearch) {
-      // Auto-join if name provided
-      setPlayerName(playerNameFromSearch);
-      handleJoinGame(playerNameFromSearch);
+      // Auto-join if name provided (only if not already joining)
+      if (!joinGame.isPending) {
+        setPlayerName(playerNameFromSearch);
+        handleJoinGame(playerNameFromSearch);
+      }
     } else {
       // Show join prompt
       setShowJoinPrompt(true);
     }
-  }, [game, hasJoined, search]);
+  }, [game, hasJoined, search, joinGame.isPending]);
 
   const handleJoinGame = async (name: string) => {
+    // Guard against multiple simultaneous join attempts
+    if (joinGame.isPending) return;
+    
     try {
       const updatedGame = await joinGame.mutateAsync({ playerName: name });
       
@@ -143,6 +148,7 @@ export const Game = () => {
       setHasJoined(true);
       setShowJoinPrompt(false);
     } catch (error: any) {
+      console.error('Failed to join game:', error);
       alert(error.message || 'Failed to join game');
     }
   };

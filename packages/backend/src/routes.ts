@@ -105,23 +105,31 @@ router.post('/games/:id/join', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Player name must be different from the existing player' });
     }
 
-    // Determine which player slot to fill
+    // Use WHERE clause to prevent race condition - only update if slot is still empty
     let updateQuery: string;
     let newStatus = 'playing'; // Both players present, game can start
 
     if (!game.player_x_name) {
+      // Update only if player_x_name is still null (prevents race condition)
       updateQuery = `UPDATE games 
                      SET player_x_name = $1, status = $2, updated_at = NOW()
-                     WHERE id = $3
+                     WHERE id = $3 AND player_x_name IS NULL
                      RETURNING *`;
     } else {
+      // Update only if player_o_name is still null (prevents race condition)
       updateQuery = `UPDATE games 
                      SET player_o_name = $1, status = $2, updated_at = NOW()
-                     WHERE id = $3
+                     WHERE id = $3 AND player_o_name IS NULL
                      RETURNING *`;
     }
 
     const updateResult = await query(updateQuery, [playerName.trim(), newStatus, id]);
+    
+    // If no rows returned, the slot was filled by another request (race condition)
+    if (updateResult.rows.length === 0) {
+      return res.status(400).json({ error: 'Game is full' });
+    }
+
     const updatedGame = updateResult.rows[0];
     const gameState = dbRowToGameState(updatedGame);
 
