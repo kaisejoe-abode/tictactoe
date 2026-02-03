@@ -18,8 +18,28 @@ const allowedOrigins = [
   process.env.FRONTEND_URL, // Production frontend URL
 ].filter((origin): origin is string => Boolean(origin));
 
+// Log allowed origins for debugging
+console.log('Allowed CORS origins:', allowedOrigins);
+
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Remove trailing slash from origin for comparison
+    const normalizedOrigin = origin.replace(/\/$/, '');
+    const normalizedAllowedOrigins = allowedOrigins.map(o => o.replace(/\/$/, ''));
+
+    if (normalizedAllowedOrigins.includes(normalizedOrigin)) {
+      callback(null, true);
+    } else {
+      console.warn('CORS blocked origin:', origin);
+      console.warn('Allowed origins:', normalizedAllowedOrigins);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
 }));
 
